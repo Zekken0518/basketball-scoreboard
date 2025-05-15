@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en" class="dark-mode">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Basketball Scoreboard</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Basketball Scoreboard</h1>
+      <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark/light mode">
+        <span class="theme-toggle-icon">🌙</span>
+      </button>
+    </div>
+    
+    <div class="main-content">
+      <div class="scoreboard">
+        <div class="team team-home">
+          <div class="logo-container">
+            <img id="home-logo" src="/placeholder.svg?height=100&width=100" alt="Home Team Logo">
+          </div>
+          <button class="upload-btn" id="home-logo-btn">Upload Logo</button>
+          <input type="file" id="home-logo-input" accept="image/*" class="logo-input">
+          
+          <div class="team-name">
+            <input type="text" id="home-team-name" placeholder="Click to edit team name" value="HOME" aria-label="Home team name">
+          </div>
+          <div class="score" id="home-score">0</div>
+          <div class="team-fouls">
+            <span>FOULS: </span><span id="home-fouls">0</span>
+          </div>
+        </div>
+        
+        <div class="game-info">
+          <div class="quarter">
+            <span>QUARTER</span>
+            <div id="quarter">1</div>
+          </div>
+          <div class="timer" id="timer">10:00</div>
+          <div class="shot-clock" id="shot-clock">24</div>
+        </div>
+        
+        <div class="team team-away">
+          <div class="logo-container">
+            <img id="away-logo" src="/placeholder.svg?height=100&width=100" alt="Away Team Logo">
+          </div>
+          <button class="upload-btn" id="away-logo-btn">Upload Logo</button>
+          <input type="file" id="away-logo-input" accept="image/*" class="logo-input">
+          
+          <div class="team-name">
+            <input type="text" id="away-team-name" placeholder="Click to edit team name" value="AWAY" aria-label="Away team name">
+          </div>
+          <div class="score" id="away-score">0</div>
+          <div class="team-fouls">
+            <span>FOULS: </span><span id="away-fouls">0</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="controls">
+        <div class="control-section">
+          <div class="control-group">
+            <div class="team-controls">
+              <h3 id="home-control-name">HOME</h3>
+              <div class="score-buttons">
+                <button class="btn" data-team="home" data-points="1">+1</button>
+                <button class="btn" data-team="home" data-points="2">+2</button>
+                <button class="btn" data-team="home" data-points="3">+3</button>
+                <button class="btn btn-subtract" data-team="home" data-points="-1">-1</button>
+              </div>
+              <div class="foul-buttons">
+                <button class="btn foul-btn" data-team="home" data-action="add">Add Foul</button>
+                <button class="btn foul-btn-subtract" data-team="home" data-action="subtract">Remove Foul</button>
+              </div>
+            </div>
+            
+            <div class="clock-controls">
+              <div class="timer-buttons">
+                <button id="start-stop" class="btn btn-large">Start</button>
+                <button id="reset-timer" class="btn btn-large">Reset Timer</button>
+              </div>
+              <div class="timer-settings">
+                <input type="number" id="timer-minutes" min="0" max="99" value="10">
+                <span>:</span>
+                <input type="number" id="timer-seconds" min="0" max="59" value="0">
+                <button id="set-timer" class="btn">Set</button>
+              </div>
+              <div class="shot-clock-buttons">
+                <button id="reset-shot-clock-24" class="btn">24s</button>
+                <button id="reset-shot-clock-14" class="btn">14s</button>
+                <button id="shot-clock-plus" class="btn">+1</button>
+                <button id="shot-clock-minus" class="btn">-1</button>
+                <button id="toggle-shot-clock" class="btn">Toggle Shot Clock</button>
+              </div>
+              <div class="quarter-buttons">
+                <button id="next-quarter" class="btn">Next Quarter</button>
+                <button id="overtime" class="btn">Overtime</button>
+                <button id="reset-game" class="btn btn-warning">Reset Game</button>
+              </div>
+            </div>
+            
+            <div class="team-controls">
+              <h3 id="away-control-name">AWAY</h3>
+              <div class="score-buttons">
+                <button class="btn" data-team="away" data-points="1">+1</button>
+                <button class="btn" data-team="away" data-points="2">+2</button>
+                <button class="btn" data-team="away" data-points="3">+3</button>
+                <button class="btn btn-subtract" data-team="away" data-points="-1">-1</button>
+              </div>
+              <div class="foul-buttons">
+                <button class="btn foul-btn" data-team="away" data-action="add">Add Foul</button>
+                <button class="btn foul-btn-subtract" data-team="away" data-action="subtract">Remove Foul</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <button id="fullscreen-btn" class="fullscreen-btn" aria-label="Toggle fullscreen">
+      <span class="fullscreen-icon">⛶</span>
+    </button>
+  </div>
+  
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,722 @@
+:root {
+    /* Dark mode colors */
+    --bg-color-dark: #000;
+    --bg-gradient-dark: linear-gradient(to bottom, #000000, #0a0a0a, #121212);
+    --text-color-dark: #f0f0f0;
+    --scoreboard-bg-dark: #111;
+    --scoreboard-gradient-dark: linear-gradient(to bottom, #111, #1a1a1a);
+    --controls-bg-dark: #111;
+    --controls-gradient-dark: linear-gradient(to bottom, #111, #1a1a1a);
+    --panel-bg-dark: #1a1a1a;
+    --accent-color-dark: #00c3ff;
+    --accent-glow-dark: rgba(0, 195, 255, 0.5);
+    --warning-color-dark: #ff3860;
+    --warning-glow-dark: rgba(255, 56, 96, 0.5);
+    --border-color-dark: rgba(0, 195, 255, 0.2);
+    --input-bg-dark: #222;
+    --input-border-dark: #444;
+    --foul-color-dark: #9b59b6;
+    --foul-glow-dark: rgba(155, 89, 182, 0.5);
+  
+    /* Light mode colors */
+    --bg-color-light: #f0f0f0;
+    --bg-gradient-light: linear-gradient(to bottom, #f0f0f0, #e0e0e0);
+    --text-color-light: #333;
+    --scoreboard-bg-light: #fff;
+    --scoreboard-gradient-light: linear-gradient(to bottom, #fff, #f5f5f5);
+    --controls-bg-light: #fff;
+    --controls-gradient-light: linear-gradient(to bottom, #fff, #f5f5f5);
+    --panel-bg-light: #f0f0f0;
+    --accent-color-light: #0078d7;
+    --accent-glow-light: rgba(0, 120, 215, 0.3);
+    --warning-color-light: #d9534f;
+    --warning-glow-light: rgba(217, 83, 79, 0.3);
+    --border-color-light: rgba(0, 120, 215, 0.2);
+    --input-bg-light: #fff;
+    --input-border-light: #ccc;
+    --foul-color-light: #8e44ad;
+    --foul-glow-light: rgba(142, 68, 173, 0.3);
+  }
+  
+  .dark-mode {
+    --bg-color: var(--bg-color-dark);
+    --bg-gradient: var(--bg-gradient-dark);
+    --text-color: var(--text-color-dark);
+    --scoreboard-bg: var(--scoreboard-bg-dark);
+    --scoreboard-gradient: var(--scoreboard-gradient-dark);
+    --controls-bg: var(--controls-bg-dark);
+    --controls-gradient: var(--controls-gradient-dark);
+    --panel-bg: var(--panel-bg-dark);
+    --accent-color: var(--accent-color-dark);
+    --accent-glow: var(--accent-glow-dark);
+    --warning-color: var(--warning-color-dark);
+    --warning-glow: var(--warning-glow-dark);
+    --border-color: var(--border-color-dark);
+    --input-bg: var(--input-bg-dark);
+    --input-border: var(--input-border-dark);
+    --foul-color: var(--foul-color-dark);
+    --foul-glow: var(--foul-glow-dark);
+  }
+  
+  .light-mode {
+    --bg-color: var(--bg-color-light);
+    --bg-gradient: var(--bg-gradient-light);
+    --text-color: var(--text-color-light);
+    --scoreboard-bg: var(--scoreboard-bg-light);
+    --scoreboard-gradient: var(--scoreboard-gradient-light);
+    --controls-bg: var(--controls-bg-light);
+    --controls-gradient: var(--controls-gradient-light);
+    --panel-bg: var(--panel-bg-light);
+    --accent-color: var(--accent-color-light);
+    --accent-glow: var(--accent-glow-light);
+    --warning-color: var(--warning-color-light);
+    --warning-glow: var(--warning-glow-light);
+    --border-color: var(--border-color-light);
+    --input-bg: var(--input-bg-light);
+    --input-border: var(--input-border-light);
+    --foul-color: var(--foul-color-light);
+    --foul-glow: var(--foul-glow-light);
+  }
+  
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Arial", sans-serif;
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  html,
+  body {
+    height: 100%;
+    overflow: hidden;
+    touch-action: manipulation;
+  }
+  
+  body {
+    background-color: var(--bg-color);
+    background-image: var(--bg-gradient);
+    color: var(--text-color);
+    transition: background-color 0.3s, color 0.3s;
+  }
+  
+  .container {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding: clamp(5px, 1vw, 10px);
+    position: relative;
+  }
+  
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 clamp(5px, 1vw, 10px);
+    margin-bottom: clamp(5px, 1vh, 10px);
+    height: clamp(40px, 6vh, 60px);
+  }
+  
+  h1 {
+    text-align: center;
+    color: var(--text-color);
+    text-shadow: 0 0 10px var(--accent-glow);
+    font-size: clamp(1.2rem, 4vw, 1.8rem);
+    flex-grow: 1;
+  }
+  
+  .theme-toggle,
+  .fullscreen-btn {
+    background-color: transparent;
+    border: 1px solid var(--accent-color);
+    color: var(--accent-color);
+    width: clamp(30px, 5vw, 40px);
+    height: clamp(30px, 5vw, 40px);
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: clamp(0.8rem, 3vw, 1.2rem);
+    transition: all 0.3s;
+    box-shadow: 0 0 5px var(--accent-glow);
+    z-index: 10;
+  }
+  
+  .theme-toggle:hover,
+  .fullscreen-btn:hover {
+    background-color: var(--accent-color);
+    color: var(--bg-color);
+    transform: scale(1.05);
+  }
+  
+  .fullscreen-btn {
+    position: fixed;
+    bottom: 15px;
+    right: 15px;
+  }
+  
+  .main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(5px, 1vh, 10px);
+    height: calc(100vh - clamp(40px, 6vh, 60px) - clamp(5px, 1vh, 10px));
+    overflow: hidden;
+  }
+  
+  .scoreboard {
+    display: flex;
+    justify-content: space-between;
+    background-color: var(--scoreboard-bg);
+    background-image: var(--scoreboard-gradient);
+    color: var(--text-color);
+    border-radius: 10px;
+    padding: clamp(10px, 2vw, 15px);
+    box-shadow: 0 0 20px var(--accent-glow), inset 0 0 10px rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--border-color);
+    flex: 1;
+    max-height: 50vh;
+    min-height: 200px;
+  }
+  
+  .team {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 30%;
+    justify-content: space-between;
+  }
+  
+  .logo-container {
+    position: relative;
+    margin-bottom: 5px;
+    width: clamp(50px, 10vw, 80px);
+    height: clamp(50px, 10vw, 80px);
+    border-radius: 50%;
+    overflow: hidden;
+    box-shadow: 0 0 15px var(--accent-glow);
+  }
+  
+  .logo-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    background-color: var(--panel-bg);
+    border-radius: 50%;
+  }
+  
+  .logo-input {
+    display: none;
+  }
+  
+  .upload-btn {
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: clamp(3px, 1vw, 4px) clamp(6px, 2vw, 8px);
+    font-size: clamp(0.6rem, 2vw, 0.75rem);
+    cursor: pointer;
+    margin-bottom: 8px;
+    transition: all 0.3s;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+  
+  .upload-btn:hover {
+    background-color: color-mix(in srgb, var(--accent-color), white 15%);
+    transform: translateY(-1px);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3), 0 0 5px var(--accent-glow);
+  }
+  
+  .team-name {
+    margin-bottom: 5px;
+    width: 100%;
+    text-align: center;
+  }
+  
+  .team-name input {
+    background-color: transparent;
+    border: none;
+    color: var(--text-color);
+    font-size: clamp(0.9rem, 3vw, 1.25rem);
+    font-weight: bold;
+    text-align: center;
+    width: 100%;
+    transition: all 0.3s;
+  }
+  
+  .team-name input:focus {
+    outline: none;
+    border-bottom: 2px solid var(--accent-color);
+    text-shadow: 0 0 10px var(--accent-glow);
+  }
+  
+  .score {
+    font-size: clamp(2.5rem, 10vw, 4.5rem);
+    font-weight: bold;
+    color: var(--text-color);
+    text-shadow: 0 0 20px var(--accent-glow);
+    line-height: 1;
+  }
+  
+  .team-fouls {
+    font-size: clamp(0.75rem, 2.5vw, 1rem);
+    margin-top: 5px;
+  }
+  
+  .game-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    width: 30%;
+    background-color: var(--panel-bg);
+    border-radius: 8px;
+    padding: clamp(5px, 1.5vw, 10px);
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--border-color);
+  }
+  
+  .quarter {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .quarter span {
+    font-size: clamp(0.7rem, 2vw, 0.9rem);
+    margin-bottom: 5px;
+    color: var(--text-color);
+    opacity: 0.8;
+  }
+  
+  .quarter div {
+    font-size: clamp(1.2rem, 4vw, 1.5rem);
+    font-weight: bold;
+    color: var(--text-color);
+    text-shadow: 0 0 10px var(--accent-glow);
+  }
+  
+  .timer {
+    font-size: clamp(1.8rem, 6vw, 3rem);
+    font-weight: bold;
+    color: var(--accent-color);
+    text-shadow: 0 0 15px var(--accent-glow);
+  }
+  
+  .shot-clock {
+    font-size: clamp(1.5rem, 5vw, 2.25rem);
+    font-weight: bold;
+    color: var(--warning-color);
+    margin-top: 5px;
+    background-color: var(--bg-color);
+    padding: clamp(3px, 1vw, 5px) clamp(8px, 2vw, 15px);
+    border-radius: 5px;
+    text-shadow: 0 0 15px var(--warning-glow);
+    box-shadow: 0 0 10px var(--warning-glow);
+  }
+  
+  .controls {
+    background-color: var(--controls-bg);
+    background-image: var(--controls-gradient);
+    border-radius: 10px;
+    padding: clamp(10px, 2vw, 15px);
+    box-shadow: 0 0 20px var(--accent-glow), inset 0 0 10px rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--border-color);
+    flex: 0 0 auto;
+    max-height: 45vh;
+    min-height: 150px;
+    overflow: hidden;
+  }
+  
+  .control-section {
+    height: 100%;
+  }
+  
+  .control-group {
+    display: flex;
+    justify-content: space-between;
+    gap: clamp(5px, 1vw, 10px);
+    height: 100%;
+  }
+  
+  .team-controls {
+    flex: 1;
+    background-color: var(--panel-bg);
+    padding: clamp(5px, 1.5vw, 10px);
+    border-radius: 8px;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .team-controls h3 {
+    margin-bottom: clamp(5px, 1vh, 10px);
+    text-align: center;
+    color: var(--text-color);
+    text-shadow: 0 0 5px var(--accent-glow);
+    font-size: clamp(0.8rem, 2.5vw, 1rem);
+  }
+  
+  .score-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: clamp(2px, 0.5vw, 5px);
+    margin-bottom: clamp(5px, 1vh, 10px);
+  }
+  
+  .foul-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: clamp(2px, 0.5vw, 5px);
+  }
+  
+  .clock-controls {
+    flex: 1.2;
+    background-color: var(--panel-bg);
+    padding: clamp(5px, 1.5vw, 10px);
+    border-radius: 8px;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    gap: clamp(5px, 1vh, 10px);
+  }
+  
+  .timer-buttons,
+  .shot-clock-buttons,
+  .quarter-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: clamp(2px, 0.5vw, 5px);
+  }
+  
+  .btn {
+    background-color: var(--accent-color);
+    background-image: linear-gradient(to bottom, var(--accent-color), color-mix(in srgb, var(--accent-color), black 10%));
+    color: white;
+    border: none;
+    padding: clamp(4px, 1vw, 6px) clamp(8px, 1.5vw, 12px);
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    font-size: clamp(0.7rem, 2vw, 0.85rem);
+    touch-action: manipulation;
+  }
+  
+  .btn:hover {
+    background-image: linear-gradient(to bottom, color-mix(in srgb, var(--accent-color), white 10%), var(--accent-color));
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3), 0 0 10px var(--accent-glow);
+  }
+  
+  .btn:active {
+    transform: translateY(1px);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  }
+  
+  .btn-subtract {
+    background-color: var(--warning-color);
+    background-image: linear-gradient(
+      to bottom,
+      var(--warning-color),
+      color-mix(in srgb, var(--warning-color), black 10%)
+    );
+  }
+  
+  .btn-subtract:hover {
+    background-image: linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--warning-color), white 10%),
+      var(--warning-color)
+    );
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3), 0 0 10px var(--warning-glow);
+  }
+  
+  .btn-large {
+    padding: clamp(6px, 1.2vw, 8px) clamp(12px, 2vw, 16px);
+    font-size: clamp(0.8rem, 2.2vw, 1rem);
+  }
+  
+  .btn-warning {
+    background-color: var(--warning-color);
+    background-image: linear-gradient(
+      to bottom,
+      var(--warning-color),
+      color-mix(in srgb, var(--warning-color), black 10%)
+    );
+  }
+  
+  .btn-warning:hover {
+    background-image: linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--warning-color), white 10%),
+      var(--warning-color)
+    );
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3), 0 0 10px var(--warning-glow);
+  }
+  
+  .foul-btn {
+    background-color: var(--foul-color);
+    background-image: linear-gradient(to bottom, var(--foul-color), color-mix(in srgb, var(--foul-color), black 10%));
+  }
+  
+  .foul-btn:hover {
+    background-image: linear-gradient(to bottom, color-mix(in srgb, var(--foul-color), white 10%), var(--foul-color));
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3), 0 0 10px var(--foul-glow);
+  }
+  
+  .foul-btn-subtract {
+    background-color: color-mix(in srgb, var(--foul-color), white 20%);
+    background-image: linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--foul-color), white 20%),
+      color-mix(in srgb, var(--foul-color), black 10%)
+    );
+  }
+  
+  .foul-btn-subtract:hover {
+    background-image: linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--foul-color), white 30%),
+      color-mix(in srgb, var(--foul-color), white 10%)
+    );
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3), 0 0 10px var(--foul-glow);
+  }
+  
+  .timer-settings {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(2px, 0.5vw, 5px);
+    color: var(--text-color);
+    margin: 5px 0;
+  }
+  
+  .timer-settings input {
+    width: clamp(30px, 6vw, 40px);
+    padding: clamp(3px, 0.8vw, 5px);
+    text-align: center;
+    background-color: var(--input-bg);
+    border: 1px solid var(--input-border);
+    color: var(--text-color);
+    border-radius: 4px;
+    font-size: clamp(0.7rem, 2vw, 0.85rem);
+  }
+  
+  /* Mobile Portrait (Small Phones) */
+  @media (max-width: 320px) {
+    .control-group {
+      flex-direction: column;
+    }
+  
+    .team-controls,
+    .clock-controls {
+      width: 100%;
+      margin-bottom: 5px;
+    }
+  
+    .btn {
+      padding: 3px 6px;
+      font-size: 0.65rem;
+    }
+  
+    .score {
+      font-size: 2rem;
+    }
+  
+    .timer {
+      font-size: 1.5rem;
+    }
+  
+    .shot-clock {
+      font-size: 1.2rem;
+    }
+  }
+  
+  /* Mobile Portrait (Standard) */
+  @media (max-width: 480px) {
+    .scoreboard {
+      flex-direction: column;
+      align-items: center;
+      max-height: none;
+    }
+  
+    .team,
+    .game-info {
+      width: 100%;
+      margin-bottom: 10px;
+    }
+  
+    .control-group {
+      flex-direction: column;
+    }
+  
+    .team-controls,
+    .clock-controls {
+      width: 100%;
+      margin-bottom: 5px;
+    }
+  
+    .main-content {
+      overflow-y: auto;
+    }
+  
+    .container {
+      height: auto;
+      overflow-y: auto;
+    }
+  }
+  
+  /* Mobile Landscape */
+  @media (max-height: 480px) and (orientation: landscape) {
+    .scoreboard {
+      flex-direction: row;
+      max-height: 40vh;
+    }
+  
+    .controls {
+      max-height: 50vh;
+    }
+  
+    .control-group {
+      flex-direction: row;
+    }
+  
+    .logo-container {
+      width: 40px;
+      height: 40px;
+    }
+  
+    .score {
+      font-size: 2.5rem;
+    }
+  
+    .timer {
+      font-size: 1.8rem;
+    }
+  
+    .shot-clock {
+      font-size: 1.5rem;
+    }
+  
+    .btn {
+      padding: 4px 8px;
+      font-size: 0.7rem;
+    }
+  
+    .main-content {
+      flex-direction: column;
+    }
+  }
+  
+  /* Tablet Portrait */
+  @media (min-width: 481px) and (max-width: 768px) {
+    .control-group {
+      flex-direction: column;
+    }
+  
+    .team-controls,
+    .clock-controls {
+      width: 100%;
+      margin-bottom: 5px;
+    }
+  }
+  
+  /* Tablet Landscape */
+  @media (min-width: 769px) and (max-width: 1024px) and (orientation: landscape) {
+    .logo-container {
+      width: 60px;
+      height: 60px;
+    }
+  
+    .score {
+      font-size: 3rem;
+    }
+  
+    .timer {
+      font-size: 2.5rem;
+    }
+  
+    .shot-clock {
+      font-size: 2rem;
+    }
+  }
+  
+  /* Large Desktop */
+  @media (min-width: 1200px) {
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+  
+    .btn {
+      font-size: 0.9rem;
+    }
+  
+    .score {
+      font-size: 5rem;
+    }
+  }
+  
+  /* Extra Large Screens */
+  @media (min-width: 1600px) {
+    .container {
+      max-width: 1600px;
+    }
+  
+    .btn {
+      font-size: 1rem;
+      padding: 8px 16px;
+    }
+  }
+  
+  /* High DPI Screens */
+  @media (min-resolution: 192dpi) {
+    .btn,
+    .upload-btn {
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+  }
+  
+  /* Print Styles */
+  @media print {
+    .controls,
+    .theme-toggle,
+    .fullscreen-btn {
+      display: none;
+    }
+  
+    .scoreboard {
+      box-shadow: none;
+      border: 1px solid #000;
+    }
+  
+    body {
+      background: #fff;
+      color: #000;
+    }
+  }
+  
+  /* Fullscreen Mode */
+  .fullscreen-mode .container {
+    padding: 0;
+  }
+  
+  .fullscreen-mode .header {
+    padding: 10px;
+  }
+  
+  .fullscreen-mode .scoreboard,
+  .fullscreen-mode .controls {
+    border-radius: 0;
+  }
+  
