@@ -38,6 +38,53 @@
     --foul-glow-light: rgba(142, 68, 173, 0.3);
   }
   
+  /* Add these styles at the beginning of the file, after the :root section */
+  /* Mobile-specific improvements */
+  html {
+    touch-action: manipulation;
+    height: -webkit-fill-available;
+  }
+  
+  body {
+    min-height: 100vh;
+    /* mobile viewport bug fix */
+    min-height: -webkit-fill-available;
+    overscroll-behavior: none;
+  }
+  
+  input,
+  button {
+    -webkit-appearance: none;
+    appearance: none;
+    border-radius: 4px;
+  }
+  
+  /* Improve button touch targets */
+  .btn,
+  .upload-btn,
+  .theme-toggle,
+  .fullscreen-btn {
+    min-height: 44px;
+    min-width: 44px;
+    touch-action: manipulation;
+  }
+  
+  /* Add iOS safe area support */
+  .container {
+    padding: clamp(5px, 1vw, 10px);
+    padding-left: max(clamp(5px, 1vw, 10px), env(safe-area-inset-left));
+    padding-right: max(clamp(5px, 1vw, 10px), env(safe-area-inset-right));
+    padding-top: max(clamp(5px, 1vw, 10px), env(safe-area-inset-top));
+    padding-bottom: max(clamp(5px, 1vw, 10px), env(safe-area-inset-bottom));
+  }
+  
+  /* Improve mobile input fields */
+  input[type="number"],
+  input[type="text"] {
+    font-size: 16px; /* Prevents iOS zoom on focus */
+    touch-action: manipulation;
+  }
+  
   .dark-mode {
     --bg-color: var(--bg-color-dark);
     --bg-gradient: var(--bg-gradient-dark);
@@ -718,5 +765,92 @@
   .fullscreen-mode .scoreboard,
   .fullscreen-mode .controls {
     border-radius: 0;
+  }
+  
+  /* Enhance mobile-specific media queries */
+  
+  /* iPhone SE and other small devices */
+  @media (max-width: 375px) {
+    .btn {
+      padding: 8px 10px;
+      margin: 2px;
+      font-size: 0.7rem;
+    }
+  
+    .team-name input {
+      font-size: 0.9rem;
+    }
+  
+    .score {
+      font-size: 2.2rem;
+    }
+  
+    .timer {
+      font-size: 1.6rem;
+    }
+  
+    .shot-clock {
+      font-size: 1.4rem;
+    }
+  
+    .timer-settings input {
+      width: 28px;
+    }
+  }
+  
+  /* Mobile devices in landscape */
+  @media (max-height: 450px) and (orientation: landscape) {
+    .container {
+      height: 100%;
+      overflow-y: auto;
+    }
+  
+    .main-content {
+      flex-direction: row;
+      flex-wrap: wrap;
+      height: auto;
+    }
+  
+    .scoreboard {
+      flex: 1 1 100%;
+      max-height: 40vh;
+    }
+  
+    .controls {
+      flex: 1 1 100%;
+      max-height: none;
+    }
+  
+    .team-controls h3 {
+      font-size: 0.8rem;
+    }
+  
+    .btn {
+      padding: 6px 8px;
+      font-size: 0.7rem;
+    }
+  }
+  
+  /* Notched phones (like iPhone X and newer) */
+  @supports (padding: max(0px)) {
+    .fullscreen-btn {
+      bottom: max(15px, env(safe-area-inset-bottom));
+      right: max(15px, env(safe-area-inset-right));
+    }
+  }
+  
+  /* Add active state for better touch feedback */
+  .btn:active,
+  .upload-btn:active,
+  .theme-toggle:active,
+  .fullscreen-btn:active {
+    transform: scale(0.95);
+    opacity: 0.9;
+    transition: transform 0.1s, opacity 0.1s;
+  }
+  
+  /* Improve mobile scrolling */
+  .main-content {
+    -webkit-overflow-scrolling: touch;
   }
   

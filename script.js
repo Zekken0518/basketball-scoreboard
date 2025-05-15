@@ -1,4 +1,85 @@
 document.addEventListener("DOMContentLoaded", () => {
+    // Mobile-specific setup
+    function setupMobileOptimizations() {
+      // Prevent default touchmove behavior on iOS
+      document.addEventListener(
+        "touchmove",
+        (e) => {
+          if (e.scale !== 1) {
+            e.preventDefault()
+          }
+        },
+        { passive: false },
+      )
+  
+      // Handle iOS PWA status bar
+      if (window.navigator.standalone) {
+        document.body.classList.add("ios-pwa")
+      }
+  
+      // Fix iOS 100vh issue
+      function setVhProperty() {
+        const vh = window.innerHeight * 0.01
+        document.documentElement.style.setProperty("--vh", `${vh}px`)
+      }
+  
+      setVhProperty()
+      window.addEventListener("resize", setVhProperty)
+  
+      // Improve input field behavior on mobile
+      const inputs = document.querySelectorAll("input")
+      inputs.forEach((input) => {
+        // Blur input on Enter key
+        input.addEventListener("keydown", (e) => {
+          if (e.key === "Enter") {
+            input.blur()
+          }
+        })
+  
+        // For number inputs, ensure they're numeric
+        if (input.type === "number") {
+          input.addEventListener("input", () => {
+            input.value = input.value.replace(/[^0-9]/g, "")
+          })
+        }
+      })
+  
+      // Add touch feedback to buttons
+      const buttons = document.querySelectorAll("button")
+      buttons.forEach((button) => {
+        button.addEventListener(
+          "touchstart",
+          () => {
+            button.classList.add("touch-active")
+          },
+          { passive: true },
+        )
+  
+        button.addEventListener(
+          "touchend",
+          () => {
+            button.classList.remove("touch-active")
+          },
+          { passive: true },
+        )
+      })
+  
+      // Handle orientation changes more effectively
+      window.addEventListener("orientationchange", () => {
+        // Force redraw after orientation change
+        setTimeout(() => {
+          window.scrollTo(0, 0)
+          adjustLayoutForOrientation()
+        }, 100)
+      })
+  
+      // Detect if running on iOS
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream
+      if (isIOS) {
+        document.body.classList.add("ios-device")
+      }
+    }
+  
     // DOM Elements
     const homeScore = document.getElementById("home-score")
     const awayScore = document.getElementById("away-score")
@@ -234,21 +315,70 @@ document.addEventListener("DOMContentLoaded", () => {
   
     // Reset game
     resetGameBtn.addEventListener("click", () => {
-      if (confirm("Are you sure you want to reset the game?")) {
-        scores.home = 0
-        scores.away = 0
-        fouls.home = 0
-        fouls.away = 0
-        currentQuarter = 1
-        isOvertime = false
-        resetTimer()
-        resetShotClockTo24()
-        updateScoreDisplay()
-        updateFoulsDisplay()
-        quarter.textContent = currentQuarter
-        // Reset timer to 10 minutes for regular quarters
-        timerMinutes.value = 10
-        timerSeconds.value = 0
+      // For mobile, we'll create a custom confirm dialog
+      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
+  
+      if (isMobile) {
+        const confirmOverlay = document.createElement("div")
+        confirmOverlay.style.position = "fixed"
+        confirmOverlay.style.top = "0"
+        confirmOverlay.style.left = "0"
+        confirmOverlay.style.width = "100%"
+        confirmOverlay.style.height = "100%"
+        confirmOverlay.style.backgroundColor = "rgba(0,0,0,0.7)"
+        confirmOverlay.style.zIndex = "9999"
+        confirmOverlay.style.display = "flex"
+        confirmOverlay.style.justifyContent = "center"
+        confirmOverlay.style.alignItems = "center"
+  
+        const confirmBox = document.createElement("div")
+        confirmBox.style.backgroundColor = "var(--panel-bg)"
+        confirmBox.style.color = "var(--text-color)"
+        confirmBox.style.padding = "20px"
+        confirmBox.style.borderRadius = "10px"
+        confirmBox.style.maxWidth = "80%"
+        confirmBox.style.textAlign = "center"
+        confirmBox.style.boxShadow = "0 0 20px var(--accent-glow)"
+  
+        const confirmMessage = document.createElement("p")
+        confirmMessage.textContent = "Are you sure you want to reset the game?"
+        confirmMessage.style.marginBottom = "15px"
+  
+        const buttonContainer = document.createElement("div")
+        buttonContainer.style.display = "flex"
+        buttonContainer.style.justifyContent = "space-around"
+  
+        const cancelButton = document.createElement("button")
+        cancelButton.textContent = "Cancel"
+        cancelButton.className = "btn"
+        cancelButton.style.minWidth = "80px"
+        cancelButton.style.marginRight = "10px"
+  
+        const confirmButton = document.createElement("button")
+        confirmButton.textContent = "Reset"
+        confirmButton.className = "btn btn-warning"
+        confirmButton.style.minWidth = "80px"
+  
+        cancelButton.addEventListener("click", () => {
+          document.body.removeChild(confirmOverlay)
+        })
+  
+        confirmButton.addEventListener("click", () => {
+          document.body.removeChild(confirmOverlay)
+          resetGame()
+        })
+  
+        buttonContainer.appendChild(cancelButton)
+        buttonContainer.appendChild(confirmButton)
+        confirmBox.appendChild(confirmMessage)
+        confirmBox.appendChild(buttonContainer)
+        confirmOverlay.appendChild(confirmBox)
+        document.body.appendChild(confirmOverlay)
+      } else {
+        // Use standard confirm on desktop
+        if (confirm("Are you sure you want to reset the game?")) {
+          resetGame()
+        }
       }
     })
   
@@ -282,7 +412,7 @@ document.addEventListener("DOMContentLoaded", () => {
           startShotClock()
           toggleShotClockBtn.textContent = "Stop Shot Clock"
         } else {
-          alert("Game clock must be running to start shot clock")
+          showMobileAlert("Game clock must be running to start shot clock")
         }
       }
     })
@@ -332,7 +462,7 @@ document.addEventListener("DOMContentLoaded", () => {
           stopTimer()
           stopShotClock()
           playBuzzer()
-          alert("Time is up!")
+          showMobileAlert("Time is up!")
         }
       }, 1000)
   
@@ -373,7 +503,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (shotClockValue <= 0) {
           stopShotClock()
           playBuzzer()
-          alert("Shot clock violation!")
+          showMobileAlert("Shot clock violation!")
         }
       }, 1000)
   
@@ -428,19 +558,76 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
   
+    function showMobileAlert(message) {
+      // Check if we're on a mobile device
+      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
+  
+      if (isMobile) {
+        // Create a custom alert for mobile
+        const alertOverlay = document.createElement("div")
+        alertOverlay.style.position = "fixed"
+        alertOverlay.style.top = "0"
+        alertOverlay.style.left = "0"
+        alertOverlay.style.width = "100%"
+        alertOverlay.style.height = "100%"
+        alertOverlay.style.backgroundColor = "rgba(0,0,0,0.7)"
+        alertOverlay.style.zIndex = "9999"
+        alertOverlay.style.display = "flex"
+        alertOverlay.style.justifyContent = "center"
+        alertOverlay.style.alignItems = "center"
+  
+        const alertBox = document.createElement("div")
+        alertBox.style.backgroundColor = "var(--panel-bg)"
+        alertBox.style.color = "var(--text-color)"
+        alertBox.style.padding = "20px"
+        alertBox.style.borderRadius = "10px"
+        alertBox.style.maxWidth = "80%"
+        alertBox.style.textAlign = "center"
+        alertBox.style.boxShadow = "0 0 20px var(--accent-glow)"
+  
+        const alertMessage = document.createElement("p")
+        alertMessage.textContent = message
+        alertMessage.style.marginBottom = "15px"
+  
+        const alertButton = document.createElement("button")
+        alertButton.textContent = "OK"
+        alertButton.className = "btn"
+        alertButton.style.minWidth = "80px"
+  
+        alertButton.addEventListener("click", () => {
+          document.body.removeChild(alertOverlay)
+        })
+  
+        alertBox.appendChild(alertMessage)
+        alertBox.appendChild(alertButton)
+        alertOverlay.appendChild(alertBox)
+        document.body.appendChild(alertOverlay)
+  
+        // Auto-dismiss after 3 seconds
+        setTimeout(() => {
+          if (document.body.contains(alertOverlay)) {
+            document.body.removeChild(alertOverlay)
+          }
+        }, 3000)
+      } else {
+        // Use standard alert on desktop
+        alert(message)
+      }
+    }
+  
     function handleLogoUpload(input, imgElement) {
       if (input.files && input.files[0]) {
         const file = input.files[0]
   
         // Check file size (limit to 2MB)
         if (file.size > 2 * 1024 * 1024) {
-          alert("File is too large. Maximum size is 2MB.")
+          showMobileAlert("File is too large. Maximum size is 2MB.")
           return
         }
   
         // Check file type
         if (!file.type.match("image.*")) {
-          alert("Only image files are allowed.")
+          showMobileAlert("Only image files are allowed.")
           return
         }
   
@@ -542,26 +729,37 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
   
-    // Handle orientation changes
-    window.addEventListener("orientationchange", () => {
-      // Give the browser time to adjust
-      setTimeout(() => {
-        // Adjust layout based on new orientation
-        adjustLayoutForOrientation()
-      }, 200)
-    })
-  
     function adjustLayoutForOrientation() {
-      // This function can be expanded if needed for specific orientation adjustments
-      // Currently, CSS media queries handle most of the orientation-specific styling
+      const isLandscape = window.innerWidth > window.innerHeight
+      const isMobile = window.innerWidth < 768
+  
+      if (isMobile) {
+        if (isLandscape) {
+          // Mobile landscape optimizations
+          document.body.classList.add("mobile-landscape")
+          document.body.classList.remove("mobile-portrait")
+        } else {
+          // Mobile portrait optimizations
+          document.body.classList.add("mobile-portrait")
+          document.body.classList.remove("mobile-landscape")
+        }
+      } else {
+        document.body.classList.remove("mobile-landscape", "mobile-portrait")
+      }
+  
+      // Force redraw to fix any rendering issues
+      document.body.style.display = "none"
+      // This triggers a reflow
+      void document.body.offsetHeight
+      document.body.style.display = ""
     }
   
     // Prevent zooming on double-tap for touch devices
     document.addEventListener(
       "touchstart",
-      (event) => {
-        if (event.touches.length > 1) {
-          event.preventDefault()
+      (e) => {
+        if (e.touches.length > 1) {
+          e.preventDefault()
         }
       },
       { passive: false },
@@ -591,7 +789,28 @@ document.addEventListener("DOMContentLoaded", () => {
     // Call updateDocumentTitle on page load
     updateDocumentTitle()
   
+    // Setup mobile optimizations
+    setupMobileOptimizations()
+  
     // Initial orientation adjustment
     adjustLayoutForOrientation()
+  
+    // Add this function to handle the actual game reset
+    function resetGame() {
+      scores.home = 0
+      scores.away = 0
+      fouls.home = 0
+      fouls.away = 0
+      currentQuarter = 1
+      isOvertime = false
+      resetTimer()
+      resetShotClockTo24()
+      updateScoreDisplay()
+      updateFoulsDisplay()
+      quarter.textContent = currentQuarter
+      // Reset timer to 10 minutes for regular quarters
+      timerMinutes.value = 10
+      timerSeconds.value = 0
+    }
   })
   
